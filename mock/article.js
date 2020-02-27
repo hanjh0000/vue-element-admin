@@ -1,6 +1,7 @@
 import Mock from 'mockjs'
 
 const List = []
+const gameList = []
 const count = 100
 
 const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
@@ -27,6 +28,24 @@ for (let i = 0; i < count; i++) {
   }))
 }
 
+for (let i = 0; i < count; i++) {
+  gameList.push(Mock.mock({
+    id: '@increment',
+    appid: '@integer(100,10000)',
+    appname: '@ctitle(3,7)',
+    redpacket: '@integer(0,1)',
+    lastscheduletime: '@datetime',
+    createdtime: '@datetime',
+    onlyactive: '@integer(0,1)',
+    warningrent: '@integer(30,60)',
+    device: '@character("UPPER")',
+    'procedure|1': ['CN', 'US', 'JP', 'EU'],
+    whiltelist: '@integer(0,1)',
+    renewal: '@integer(0,1)',
+    manager: '@last'
+  }))
+}
+
 export default [
   {
     url: '/article/list',
@@ -41,6 +60,33 @@ export default [
         return true
       })
 
+      if (sort === '-id') {
+        mockList = mockList.reverse()
+      }
+
+      const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
+
+      return {
+        code: 20000,
+        data: {
+          total: mockList.length,
+          items: pageList
+        }
+      }
+    }
+  },
+  {
+    url: '/article/gamelist',
+    type: 'get',
+    response: config => {
+      const { id, appid, appname, page = 1, limit = 20, sort } = config.query
+      console.log(typeof(id))
+      let mockList = gameList.filter(item => {
+        if (id && item.id != id) return false
+        if (appid && item.appid != appid) return false
+        if (appname && item.appname !== appname) return false
+        return true
+      });
       if (sort === '-id') {
         mockList = mockList.reverse()
       }

@@ -96,6 +96,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/gcadmin',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/gcadmin/index'),
+        name: 'Documentation',
+        meta: { title: '游戏详情', icon: 'documentation', affix: true }
+      }
+    ]
+  },
+  {
     path: '/guide',
     component: Layout,
     redirect: '/guide/index',
